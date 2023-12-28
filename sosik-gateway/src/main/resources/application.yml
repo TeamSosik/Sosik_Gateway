@@ -5,7 +5,7 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://127.0.0.1:8761/eureka
+      defaultZone: http://172.17.0.1:8761/eureka
     instance:
       #2??? ????? ???? ??? ???????
       lease-expiration-duration-in-seconds: 2
@@ -22,12 +22,38 @@ spring:
         - id: member-service
           uri: lb://member-service
           predicates:
-            - Path=/**
+            - Path=/members/**
+            - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+
+            #        - id: member-service
+            #          uri: lb://member-service
+            #          predicates:
+            #            - Path=/member-service/users
+            #            - Method=POST
+            #          filters:
+            #            - RemoveRequestHeader=Cookie
+            #            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+            #        - id: member-service
+            #          uri: lb://member-service
+            #          predicates:
+            #            - Path=/member-service/**
+            #            - Method=get
+            #          filters:
+            #            - RemoveRequestHeader=Cookie
+            #            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+
+            #        - id: member-service
+            #          uri: lb://member-service
+            #          predicates:
+            #            - Path=/**
             # ???? ??(UTC - 1970??? ??? ?? ??? ??)
             # After? ? ???? ? ???? ??? ? ??? ???.
             # ?? ??
             #            - After=2023-11-06T09:40:47.789-07:00[America/Denver]
             # ??? ?? 9?? ???????.
-            - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
+            #            - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
             # header? ?? ??
             # ? ?? ??? ??? ? ??.
