@@ -16,6 +16,7 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://localhost:8761/eureka/
+      
     instance:
       lease-expiration-duration-in-seconds: 2
       lease-renewal-interval-in-seconds: 1
@@ -29,38 +30,35 @@ eureka:
         - id: member-service
           uri: lb://member-service
           predicates:
-            - Path=/members/**
-            - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/member-service/(?<segment>.*), /$\{segment}
-
-            #        - id: member-service
-            #          uri: lb://member-service
-            #          predicates:
-            #            - Path=/member-service/users
-            #            - Method=POST
-            #          filters:
-            #            - RemoveRequestHeader=Cookie
-            #            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
-            #        - id: member-service
-            #          uri: lb://member-service
-            #          predicates:
-            #            - Path=/member-service/**
-            #            - Method=get
-            #          filters:
-            #            - RemoveRequestHeader=Cookie
-            #            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
-
-            #        - id: member-service
-            #          uri: lb://member-service
-            #          predicates:
-            #            - Path=/**
+        - id: food-service
+          uri: lb://food-service
+          predicates:
+            - Path=/food/**
             # ???? ??(UTC - 1970??? ??? ?? ??? ??)
             # After? ? ???? ? ???? ??? ? ??? ???.
             # ?? ??
             #            - After=2023-11-06T09:40:47.789-07:00[America/Denver]
             # ??? ?? 9?? ???????.
-            #            - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
+            - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
             # header? ?? ??
             # ? ?? ??? ??? ? ??.
+        - id: intake-service
+          uri: lb://intake-service
+          predicates:
+            - Path=/intake/**
+
+
+            - Path=/member/**
+            # ???? ??(UTC - 1970??? ??? ?? ??? ??)
+            # After? ? ???? ? ???? ??? ? ??? ???.
+            # ?? ??
+            #            - After=2023-11-06T09:40:47.789-07:00[America/Denver]
+            # ??? ?? 9?? ???????.
+            - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
+            # header? ?? ??
+            # ? ?? ??? ??? ? ??.
+        
+
