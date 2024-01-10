@@ -51,6 +51,7 @@ public class JwtTokenUtils {
         Claims claims = Jwts.claims().setSubject(email); // claims 생성 및 payload 설정
         claims.put("auth", roles); // 권한 설정, key/ value 쌍으로 저장
         claims.put("memberId",memberId);
+
         Date date = new Date();
         return Jwts.builder()
                 .setClaims(claims) // 발행 유저 정보 저장
@@ -66,6 +67,7 @@ public class JwtTokenUtils {
     }
 
     public Claims parseClaimsJws(final String token) {
+
         final SecretKey signingKey = createKey();
         return Jwts.parserBuilder()
                 .setSigningKey(signingKey)
@@ -76,6 +78,7 @@ public class JwtTokenUtils {
     public String getUserEmail(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
+
 
 
     // 어세스 토큰 헤더 설정

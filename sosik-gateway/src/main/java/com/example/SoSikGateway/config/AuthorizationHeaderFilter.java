@@ -18,7 +18,7 @@ import reactor.core.publisher.Mono;
 public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<AuthorizationHeaderFilter.Config> {
     private final JwtTokenUtils jwtTokenUtils;
 
-    public AuthorizationHeaderFilter(JwtTokenUtils jwtTokenUtils) {
+    public AuthorizationHeaderFilter( JwtTokenUtils jwtTokenUtils){
         super(Config.class);
         this.jwtTokenUtils = jwtTokenUtils;
     }
@@ -28,7 +28,8 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 
         return (exchange, chain) -> {
             if (exchange.getRequest().getURI().getPath().contains("/login") ||
-                    exchange.getRequest().getURI().getPath().contains("/sign-up")) {
+
+                exchange.getRequest().getURI().getPath().contains("/sign-up")) {
                 return chain.filter(exchange);
             }
 
@@ -44,6 +45,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             }
             Object memberId = jwtTokenUtils.parseClaimsJws(jwt).get("memberId");
             exchange.getRequest().mutate().header("memberId",memberId.toString());
+
             return chain.filter(exchange);
         };
     }
@@ -67,4 +69,5 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 
     public static class Config {
     }
+
 }
