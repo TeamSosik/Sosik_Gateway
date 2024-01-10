@@ -33,15 +33,16 @@ spring:
               - POST
               - DELETE
               - OPTIONS
+              - PATCH
       routes:
         - id: open-api # id는 아무거나 정해줘도 된다.
           uri: lb://member-service
           predicates:
-            - Path=/members/sign-up, /members/login # 제외 목록
+            - Path=/members/v1/sign-up, /members/v1/sign-in # 제외 목록
         - id: member-service
           uri: lb://member-service
           predicates:
-            - Path=/members/logout, /members/update, /members/findpw
+            - Path=/members/v1/sign-out, /members/v1/, /members/v1/passwd,/members/v1/detail,/v1/images/{memberId}
             - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
           filters:
             - name: AuthorizationHeaderFilter
