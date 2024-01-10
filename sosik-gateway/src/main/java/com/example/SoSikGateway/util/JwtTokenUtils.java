@@ -38,18 +38,19 @@ public class JwtTokenUtils {
 
     // 유저 정보를 가지고 AccessToken, RefreshToken 을 생성하는 메서드
     // Access Token 생성.
-    public String createAccessToken(String email, String role){
-        return this.createToken(email, role, accessTokenValidityInSeconds);
+    public String createAccessToken(String email, String role,Long memberId) {
+        return this.createToken(email, role, accessTokenValidityInSeconds,memberId);
     }
-    // Refresh Token 생성.
-    public String createRefreshToken(String email, String role) {
-        return this.createToken(email, role, refreshTokenValidityInSeconds);
+
+    public String createRefreshToken(String email, String role, Long memberId) {
+        return this.createToken(email, role, refreshTokenValidityInSeconds, memberId);
     }
 
     // Create token
-    public String createToken(String email, String roles, long tokenValid) {
+    public String createToken(String email, String roles, long tokenValid,Long memberId) {
         Claims claims = Jwts.claims().setSubject(email); // claims 생성 및 payload 설정
         claims.put("auth", roles); // 권한 설정, key/ value 쌍으로 저장
+        claims.put("memberId",memberId);
 
         Date date = new Date();
         return Jwts.builder()
@@ -65,7 +66,8 @@ public class JwtTokenUtils {
         return Keys.hmacShaKeyFor(secretKeyBytes);
     }
 
-    private Claims parseClaimsJws(final String token) {
+    public Claims parseClaimsJws(final String token) {
+
         final SecretKey signingKey = createKey();
         return Jwts.parserBuilder()
                 .setSigningKey(signingKey)

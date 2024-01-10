@@ -28,6 +28,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 
         return (exchange, chain) -> {
             if (exchange.getRequest().getURI().getPath().contains("/login") ||
+
                 exchange.getRequest().getURI().getPath().contains("/sign-up")) {
                 return chain.filter(exchange);
             }
@@ -37,11 +38,14 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
                     "No authorization header", HttpStatus.UNAUTHORIZED);
             String authorizationHeader = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
             String jwt = authorizationHeader.replace("Bearer ", "");
-            try{
+            try {
                 jwtTokenUtils.validateToken(jwt);
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
+            Object memberId = jwtTokenUtils.parseClaimsJws(jwt).get("memberId");
+            exchange.getRequest().mutate().header("memberId",memberId.toString());
+
             return chain.filter(exchange);
         };
     }
@@ -52,6 +56,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         log.error(err);
         return response.setComplete();
     }
+
     private boolean isJwtValid(String jwt) {
         String subject = null;
         try {
@@ -61,5 +66,8 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         }
         return !Strings.isBlank(subject);
     }
-    public static class Config {}
+
+    public static class Config {
+    }
+
 }
