@@ -38,12 +38,11 @@ spring:
         - id: open-api # id는 아무거나 정해줘도 된다.
           uri: lb://member-service
           predicates:
-            - Path=/members/v1/sign-up, /members/v1/sign-in, /oauth/**, /members/v1/passwd, /members/v1/sign-out, /members/v1/checkEmail/{email}  # 제외 목록
+            - Path=/members/v1/sign-up, /members/v1/sign-in, /oauth/**, /members/v1/passwd ,/members/v1/sign-out, /members/v1/checkEmail/{email}, /members/v1/images/{memberId} # 제외 목록
         - id: member-service
           uri: lb://member-service
           predicates:
-            - Path= /members/v1/, /members/v1/passwd,/members/v1/detail,/v1/images/{memberId}
-
+            - Path= /members/v1/, /members/v1/passwd,/members/v1/detail
             - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
           filters:
             - name: AuthorizationHeaderFilter
@@ -64,15 +63,12 @@ spring:
         - id: intake-service
           uri: lb://intake-service
           predicates:
-            - Path=/intake/**
-            # ???? ??(UTC - 1970??? ??? ?? ??? ??)
-            # After? ? ???? ? ???? ??? ? ??? ???.
-            # ?? ??
-            #            - After=2023-11-06T09:40:47.789-07:00[America/Denver]
-            # ??? ?? 9?? ???????.
+            - Path= /target-calorie/v1/{today}
             - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
-            # header? ?? ??
-            # ? ?? ??? ??? ? ??.
+          filters:
+            - name: AuthorizationHeaderFilter
+              args: # Config 클래스에 사용할 멤버변수 정의
+                headerName: Authorization
 
 jwt:
   access-token-validity-in-seconds: 86400000
