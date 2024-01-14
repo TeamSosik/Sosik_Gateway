@@ -37,29 +37,7 @@ public class JwtTokenUtils {
     }
 
     // 유저 정보를 가지고 AccessToken, RefreshToken 을 생성하는 메서드
-    // Access Token 생성.
-    public String createAccessToken(String email, String role,Long memberId) {
-        return this.createToken(email, role, accessTokenValidityInSeconds,memberId);
-    }
 
-    public String createRefreshToken(String email, String role, Long memberId) {
-        return this.createToken(email, role, refreshTokenValidityInSeconds, memberId);
-    }
-
-    // Create token
-    public String createToken(String email, String roles, long tokenValid,Long memberId) {
-        Claims claims = Jwts.claims().setSubject(email); // claims 생성 및 payload 설정
-        claims.put("auth", roles); // 권한 설정, key/ value 쌍으로 저장
-        claims.put("memberId",memberId);
-
-        Date date = new Date();
-        return Jwts.builder()
-                .setClaims(claims) // 발행 유저 정보 저장
-                .setIssuedAt(date) // 발행 시간 저장
-                .setExpiration(new Date(date.getTime() + tokenValid)) // 토큰 유효 시간 저장
-                .signWith(SignatureAlgorithm.HS256, createKey()) // 해싱 알고리즘 및 키 설정
-                .compact(); // 생성
-    }
 
     private SecretKey createKey() {
         final byte[] secretKeyBytes = secretKey.getBytes(StandardCharsets.UTF_8);

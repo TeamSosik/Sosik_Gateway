@@ -18,7 +18,7 @@ import reactor.core.publisher.Mono;
 public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<AuthorizationHeaderFilter.Config> {
     private final JwtTokenUtils jwtTokenUtils;
 
-    public AuthorizationHeaderFilter( JwtTokenUtils jwtTokenUtils){
+    public AuthorizationHeaderFilter(JwtTokenUtils jwtTokenUtils) {
         super(Config.class);
         this.jwtTokenUtils = jwtTokenUtils;
     }
@@ -27,24 +27,24 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
     public GatewayFilter apply(Config config) {
 
         return (exchange, chain) -> {
-            if (exchange.getRequest().getURI().getPath().contains("/login") ||
 
-                exchange.getRequest().getURI().getPath().contains("/sign-up")) {
+            if (UrlCheck(exchange.getRequest().getURI().getPath())) {
                 return chain.filter(exchange);
             }
+
 
             ServerHttpRequest request = exchange.getRequest();
             if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) return onError(exchange,
                     "No authorization header", HttpStatus.UNAUTHORIZED);
             String authorizationHeader = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
-            String jwt = authorizationHeader.replace("Bearer ", "");
+            String jwt = authorizationHeader.replace("\"","");
             try {
                 jwtTokenUtils.validateToken(jwt);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
             Object memberId = jwtTokenUtils.parseClaimsJws(jwt).get("memberId");
-            exchange.getRequest().mutate().header("memberId",memberId.toString());
+            exchange.getRequest().mutate().header("memberId", memberId.toString());
 
             return chain.filter(exchange);
         };
@@ -70,4 +70,17 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
     public static class Config {
     }
 
+    public static boolean UrlCheck(String path) {
+        if (path.contains("/members/v1/sign-up") ||
+                path.contains("/members/v1/sign-in") ||
+                path.contains("/oauth") ||
+                path.contains("/members/v1/passwd") ||
+                path.contains("/members/v1/sign-out") ||
+                path.contains("/members/v1/checkEmail/")){
+            return true;
+        }
+        return false;
+    }
 }
+
+
