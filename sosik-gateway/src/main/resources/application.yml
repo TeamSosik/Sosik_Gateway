@@ -63,7 +63,7 @@ spring:
         - id: intake-service
           uri: lb://intake-service
           predicates:
-            - Path= /target-calorie/v1/{today}, /target-caloire/v1/
+            - Path= /target-calorie/v1/{today}, /target-calorie/v1/
             - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
           filters:
             - name: AuthorizationHeaderFilter
