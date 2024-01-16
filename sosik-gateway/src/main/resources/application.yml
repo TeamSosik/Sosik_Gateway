@@ -43,7 +43,7 @@ spring:
         - id: member-service
           uri: lb://member-service
           predicates:
-            - Path= /members/v1/, /members/v1/passwd,/members/v1/detail,/members/v1/weight,/members/v1/managementData
+            - Path= /members/v1, /members/v1/passwd,/members/v1/detail,/members/v1/weight,/members/v1/managementData, /members/v1/checkRecode
             - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
           filters:
             - name: AuthorizationHeaderFilter
