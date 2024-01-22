@@ -38,7 +38,7 @@ spring:
         - id: open-api # id는 아무거나 정해줘도 된다.
           uri: lb://member-service
           predicates:
-            - Path=/members/v1/sign-up, /members/v1/sign-in, /oauth/**, /members/v1/passwd, /members/v1/sign-out, /members/v1/checkEmail/{email}, /members/v1/images/{memberId},/members/v1/passwd, /oauth/v1
+            - Path=/members/v1/sign-up, /members/v1/sign-in, /oauth/**, /members/v1/passwd, /members/v1/sign-out, /members/v1/checkEmail/{email}, /members/v1/images/{memberId},/members/v1/passwd, /oauth/v1, /members/v1/{memberId}
 
         - id: member-service
           uri: lb://member-service
@@ -65,6 +65,15 @@ spring:
           uri: lb://intake-service
           predicates:
             - Path= /target-calorie/v1/{today}, /target-calorie/v1, /intake/v1/rank, /intake/v1/{createdAt}, /intake/v1/food
+            - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
+          filters:
+            - name: AuthorizationHeaderFilter
+              args: # Config 클래스에 사용할 멤버변수 정의
+                headerName: Authorization
+        - id: community-service
+          uri: lb://community-service
+          predicates:
+            - Path= /comment/v1/create, /post/v1
             - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
           filters:
             - name: AuthorizationHeaderFilter
