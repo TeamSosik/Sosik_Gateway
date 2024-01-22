@@ -73,7 +73,7 @@ spring:
         - id: community-service
           uri: lb://community-service
           predicates:
-            - Path= /comment/v1/create, /post/v1
+            - Path= /comment/v1/create, /post/v1, /post/v1/{id}, /comment/v1/create
             - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
           filters:
             - name: AuthorizationHeaderFilter
