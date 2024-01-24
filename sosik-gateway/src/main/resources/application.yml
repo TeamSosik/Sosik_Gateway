@@ -38,7 +38,7 @@ spring:
         - id: open-api # id는 아무거나 정해줘도 된다.
           uri: lb://member-service
           predicates:
-            - Path=/members/v1/sign-up, /members/v1/sign-in, /oauth/**, /members/v1/passwd, /members/v1/sign-out, /members/v1/checkEmail/{email}, /members/v1/images/{memberId},/members/v1/passwd, /oauth/v1, /members/v1/{memberId}
+            - Path=/members/v1/sign-up, /members/v1/sign-in, /oauth/**, /members/v1/passwd, /members/v1/sign-out, /members/v1/checkEmail/{email}, /members/v1/images/{memberId},/members/v1/passwd, /oauth/v1
 
         - id: member-service
           uri: lb://member-service
