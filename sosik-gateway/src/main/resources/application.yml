@@ -24,10 +24,10 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: 'http://localhost:3000'
-            allow-credentials: true # JWT 나 쿠키를 사용해 메시지를 보내야 할 경우 true
+            allowedOrigins: 'http://localhost:3000, http://192.168.0.15:3000'
+            allow-credentials: true
             allowedHeaders: '*'
-            allowedMethods: # 메서드를 명시하지 않으면 안되는 경우도 있기 때문에 메서드는 명시해주는 편이 좋다고 한다.
+            allowedMethods:
               - PUT
               - GET
               - POST
@@ -35,15 +35,15 @@ spring:
               - OPTIONS
               - PATCH
       routes:
-        - id: open-api # id는 아무거나 정해줘도 된다.
+        - id: open-api
           uri: lb://member-service
           predicates:
-            - Path=/members/v1/sign-up, /members/v1/sign-in, /oauth/**, /members/v1/passwd, /members/v1/sign-out, /members/v1/checkEmail/{email}, /members/v1/images/{memberId},/members/v1/passwd, /oauth/v1
+            - Path=/members/v1/sign-up, /members/v1/sign-in, /oauth/**, /members/v1/passwd, /members/v1/sign-out, /members/v1/checkEmail/{email}, /members/v1/images/{memberId},/members/v1/passwd, /oauth/v1, /notifications/subscribe/{memberId}
 
         - id: member-service
           uri: lb://member-service
           predicates:
-            - Path= /members/v1, /members/v1/passwd,/members/v1/detail,/members/v1/weight,/members/v1/managementData, /members/v1/checkRecode
+            - Path= /members/v1, /members/v1/passwd,/members/v1/detail,/members/v1/weight,/members/v1/managementData, /members/v1/checkRecode,  /members/v1/{memberId}
             - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
           filters:
             - name: AuthorizationHeaderFilter
@@ -53,14 +53,8 @@ spring:
           uri: lb://food-service
           predicates:
             - Path=/food/**
-            # ???? ??(UTC - 1970??? ??? ?? ??? ??)
-            # After? ? ???? ? ???? ??? ? ??? ???.
-            # ?? ??
-            #            - After=2023-11-06T09:40:47.789-07:00[America/Denver]
-            # ??? ?? 9?? ???????.
+
             - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
-            # header? ?? ??
-            # ? ?? ??? ??? ? ??.
         - id: intake-service
           uri: lb://intake-service
           predicates:
@@ -68,7 +62,7 @@ spring:
             - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
           filters:
             - name: AuthorizationHeaderFilter
-              args: # Config 클래스에 사용할 멤버변수 정의
+              args:
                 headerName: Authorization
         - id: community-service
           uri: lb://community-service
