@@ -38,12 +38,11 @@ spring:
         - id: open-api
           uri: lb://member-service
           predicates:
-            - Path=/members/v1/sign-up, /members/v1/sign-in, /oauth/**, /members/v1/passwd, /members/v1/sign-out, /members/v1/checkEmail/{email}, /members/v1/images/{memberId},/members/v1/passwd, /oauth/v1, /notifications/subscribe/{memberId}
-
+            - Path=/members/v1/sign-up, /members/v1/sign-in, /oauth/**, /members/v1/passwd, /members/v1/sign-out, /members/v1/validation/{email}, /members/v1/images/{memberId},/members/v1/passwd, /oauth/v1, /notifications/subscribe/{memberId}
         - id: member-service
           uri: lb://member-service
           predicates:
-            - Path= /members/v1, /members/v1/passwd,/members/v1/detail,/members/v1/weight,/members/v1/managementData, /members/v1/checkRecode,  /members/v1/{memberId}
+            - Path= /members/v1, /members/v1/passwd,/members/v1/detail,/members/v1/weight,/members/v1/target-weight-data, /members/v1/weight-record-check,  /members/v1/{memberId}
             - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
           filters:
             - name: AuthorizationHeaderFilter
