@@ -38,7 +38,7 @@ spring:
         - id: open-api
           uri: lb://member-service
           predicates:
-            - Path=/members/v1/sign-up, /members/v1/sign-in, /oauth/**, /members/v1/passwd, /members/v1/sign-out, /members/v1/validation/{email}, /members/v1/images/{memberId},/members/v1/passwd, /oauth/v1, /notifications/subscribe/{memberId},  /members/v1/nickname/{memberId}
+            - Path=/members/v1/sign-up, /members/v1/sign-in, /oauth/**, /members/v1/passwd, /members/v1/sign-out, /members/v1/validation/{email}, /members/v1/images/{memberId},/members/v1/passwd, /oauth/v1, /notifications/subscribe/{memberId},
         - id: member-service
           uri: lb://member-service
           predicates:
