@@ -12,45 +12,71 @@ eureka:
 spring:
   application:
     name: gateway-service
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: test1234
 
   cloud:
     gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: 'http://localhost:3000, http://192.168.0.15:3000'
+            allow-credentials: true
+            allowedHeaders: '*'
+            allowedMethods:
+              - PUT
+              - GET
+              - POST
+              - DELETE
+              - OPTIONS
+              - PATCH
       routes:
+        - id: open-api
+          uri: lb://member-service
+          predicates:
+            - Path=/members/v1/sign-up, /members/v1/sign-in, /oauth/**, /members/v1/passwd, /members/v1/sign-out, /members/v1/checkEmail/{email}, /members/v1/images/{memberId},/members/v1/passwd, /oauth/v1, /notifications/subscribe/{memberId}
+
         - id: member-service
           uri: lb://member-service
           predicates:
-            - Path=/members/**
+            - Path= /members/v1, /members/v1/passwd,/members/v1/detail,/members/v1/weight,/members/v1/managementData, /members/v1/{memberId} ,/members/v1/checkRecode, /notifications/{notificationId}
             - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
           filters:
-            - RemoveRequestHeader=Cookie
-            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+            - name: AuthorizationHeaderFilter
+              args: # Config 클래스에 사용할 멤버변수 정의
+                headerName: Authorization
+        - id: food-service
+          uri: lb://food-service
+          predicates:
+            - Path=/food/**
 
-            #        - id: member-service
-            #          uri: lb://member-service
-            #          predicates:
-            #            - Path=/member-service/users
-            #            - Method=POST
-            #          filters:
-            #            - RemoveRequestHeader=Cookie
-            #            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
-            #        - id: member-service
-            #          uri: lb://member-service
-            #          predicates:
-            #            - Path=/member-service/**
-            #            - Method=get
-            #          filters:
-            #            - RemoveRequestHeader=Cookie
-            #            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+            - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
+        - id: intake-service
+          uri: lb://intake-service
+          predicates:
+            - Path= /target-calorie/v1/{today}, /target-calorie/v1, /intake/v1/rank, /intake/v1/{createdAt}, /intake/v1/food
+            - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
+          filters:
+            - name: AuthorizationHeaderFilter
+              args:
+                headerName: Authorization
+        - id: community-service
+          uri: lb://community-service
+          predicates:
+            - Path= /comment/v1/create, /post/v1, /post/v1/{id}, /comment/v1/create, /comment/v1/{commentId}
+            - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
+          filters:
+            - name: AuthorizationHeaderFilter
+              args: # Config 클래스에 사용할 멤버변수 정의
+                headerName: Authorization
 
-            #        - id: member-service
-            #          uri: lb://member-service
-            #          predicates:
-            #            - Path=/**
-            # ???? ??(UTC - 1970??? ??? ?? ??? ??)
-            # After? ? ???? ? ???? ??? ? ??? ???.
-            # ?? ??
-            #            - After=2023-11-06T09:40:47.789-07:00[America/Denver]
-            # ??? ?? 9?? ???????.
-            #            - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
-            # header? ?? ??
-            # ? ?? ??? ??? ? ??.
+
+  jwt:
+    access-token-validity-in-seconds: 86400000
+    refresh-token-validity-in-seconds: 864000000
+    secret-key: rkGU45258GGhiolLO2465TFY5345kGU45258GGhiolLO2465TFY5345KJHVJGCTHJGBGHCVGFrgtah2ty6ahdsryjms562n357
