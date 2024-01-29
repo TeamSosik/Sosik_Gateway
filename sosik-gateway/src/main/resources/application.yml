@@ -38,11 +38,11 @@ spring:
         - id: open-api
           uri: lb://member-service
           predicates:
-            - Path=/members/v1/sign-up, /members/v1/sign-in, /oauth/**, /members/v1/passwd, /members/v1/sign-out, /members/v1/validation/{email}, /members/v1/images/{memberId},/members/v1/passwd, /oauth/v1, /notifications/subscribe/{memberId}
+            - Path=/members/v1/sign-up, /members/v1/sign-in, /oauth/**, /members/v1/passwd, /members/v1/sign-out, /members/v1/validation/{email}, /members/v1/images/{memberId},/members/v1/passwd, /oauth/v1, /notifications/subscribe/{memberId},  /members/v1/nickname/{memberId}
         - id: member-service
           uri: lb://member-service
           predicates:
-            - Path= /members/v1, /members/v1/passwd,/members/v1/detail,/members/v1/weight,/members/v1/target-weight-data, /members/v1/weight-record-check,  /members/v1/{memberId}
+            - Path= /members/v1, /members/v1/passwd,/members/v1/detail,/members/v1/weight,/members/v1/target-weight-data, /members/v1/weight-record-check
             - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
           filters:
             - name: AuthorizationHeaderFilter
@@ -52,7 +52,6 @@ spring:
           uri: lb://food-service
           predicates:
             - Path=/food/**
-
             - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
         - id: intake-service
           uri: lb://intake-service
@@ -63,10 +62,14 @@ spring:
             - name: AuthorizationHeaderFilter
               args:
                 headerName: Authorization
+        - id: community-open-api # id는 아무거나 정해줘도 된다.
+          uri: lb://community-service
+          predicates:
+            - Path= /post/v1/{postId},/post/v1
         - id: community-service
           uri: lb://community-service
           predicates:
-            - Path= /comment/v1/create, /post/v1, /post/v1/{id}, /comment/v1/create, /comment/v1/{commentId}
+            - Path= /comment/v1/create, /comment/v1/{commentId}
             - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
           filters:
             - name: AuthorizationHeaderFilter
