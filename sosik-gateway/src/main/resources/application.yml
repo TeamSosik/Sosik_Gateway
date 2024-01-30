@@ -24,7 +24,7 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: 'http://localhost:3000, http://192.168.0.15:3000'
+            allowedOrigins: 'http://localhost:3000'
             allow-credentials: true
             allowedHeaders: '*'
             allowedMethods:
@@ -35,37 +35,40 @@ spring:
               - OPTIONS
               - PATCH
       routes:
+
         - id: open-api
           uri: lb://member-service
           predicates:
-            - Path=/members/v1/sign-up, /members/v1/sign-in, /oauth/**, /members/v1/passwd, /members/v1/sign-out, /members/v1/validation/{email}, /members/v1/images/{memberId},/members/v1/passwd, /oauth/v1, /notifications/subscribe/{memberId},
+            - Path=/members/v1/sign-up, /members/v1/sign-in, /oauth/**, /members/v1/passwd, /members/v1/sign-out, /members/v1/validation/{email}, /members/v1/images/{memberId}, /oauth/v1, /notifications/subscribe/{memberId},
+
         - id: member-service
           uri: lb://member-service
           predicates:
-            - Path= /members/v1, /members/v1/passwd,/members/v1/detail,/members/v1/weight,/members/v1/target-weight-data, /members/v1/weight-record-check
-            - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
-          filters:
-            - name: AuthorizationHeaderFilter
-              args: # Config 클래스에 사용할 멤버변수 정의
-                headerName: Authorization
-        - id: food-service
-          uri: lb://food-service
-          predicates:
-            - Path=/food/**
-            - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
-        - id: intake-service
-          uri: lb://intake-service
-          predicates:
-            - Path= /target-calorie/v1/{today}, /target-calorie/v1, /intake/v1/rank, /intake/v1/{createdAt}, /intake/v1/food
-            - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
+            - Path= /members/v1, /members/v1/detail,/members/v1/weight,/members/v1/target-weight-data, /members/v1/weight-record-check
           filters:
             - name: AuthorizationHeaderFilter
               args:
                 headerName: Authorization
-        - id: community-open-api # id는 아무거나 정해줘도 된다.
+
+        - id: food-service
+          uri: lb://food-service
+          predicates:
+            - Path=/food/**
+
+        - id: intake-service
+          uri: lb://intake-service
+          predicates:
+            - Path= /target-calorie/v1/{today}, /target-calorie/v1, /intake/v1/rank, /intake/v1/{createdAt}, /intake/v1/food
+          filters:
+            - name: AuthorizationHeaderFilter
+              args:
+                headerName: Authorization
+
+        - id: community-open-api
           uri: lb://community-service
           predicates:
             - Path= /post/v1/{postId},/post/v1
+
         - id: community-service
           uri: lb://community-service
           predicates:
@@ -73,7 +76,7 @@ spring:
             - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
           filters:
             - name: AuthorizationHeaderFilter
-              args: # Config 클래스에 사용할 멤버변수 정의
+              args:
                 headerName: Authorization
 
 
