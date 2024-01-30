@@ -72,7 +72,6 @@ spring:
           predicates:
             - Path= /comment/v1, /comment/v1/{commentId}, /post/v1/{postId}, /post/v1
             - Method= POST, PATCH, DELETE, OPTIONS
-            - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
           filters:
             - name: AuthorizationHeaderFilter
               args: # Config 클래스에 사용할 멤버변수 정의
