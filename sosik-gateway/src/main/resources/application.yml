@@ -65,11 +65,13 @@ spring:
         - id: community-open-api # id는 아무거나 정해줘도 된다.
           uri: lb://community-service
           predicates:
-            - Path= /post/v1/{postId},/post/v1
+            - Path= /post/v1/{postId}, /post/v1,
+            - Method= GET
         - id: community-service
           uri: lb://community-service
           predicates:
-            - Path= /comment/v1/create, /comment/v1/{commentId}
+            - Path= /comment/v1/create, /comment/v1/{commentId}, /post/v1/{postId}, /post/v1
+            - Method= POST, PATCH, DELETE, OPTIONS
             - After=2023-11-06T09:39:47.789+09:00[Asia/Seoul]
           filters:
             - name: AuthorizationHeaderFilter
