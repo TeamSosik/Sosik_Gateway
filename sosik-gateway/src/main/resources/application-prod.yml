@@ -5,7 +5,7 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://172.20.0.3:8761/eureka/
+      defaultZone: http://www.so-sik.com:8761/eureka/
     instance:
       lease-expiration-duration-in-seconds: 2
       lease-renewal-interval-in-seconds: 1
@@ -14,7 +14,7 @@ spring:
     name: gateway-service
   data:
     redis:
-      host: localhost
+      host: sosik-redis-srsogj.serverless.apn2.cache.amazonaws.com
       port: 6379
       password: test1234
 
@@ -25,7 +25,7 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: 'http://localhost:3000, http://192.168.0.15:3000'
+            allowedOrigins: 'http://www.so-sik.com:3000'
             allow-credentials: true
             allowedHeaders: '*'
             allowedMethods:
